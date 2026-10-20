@@ -1,0 +1,10 @@
+{
+  "name": "oxitune-plugins",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "test": "bun test",
+    "build": "bun scripts/build-index.ts"
+  }
+}
