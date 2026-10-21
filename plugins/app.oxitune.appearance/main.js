@@ -11,6 +11,9 @@ var LOOKS = ['glass', 'panels'];
 /** Accent when the cover has no usable color or tinting is off. */
 var FIXED_ACCENT = { glass: '#5ad1e6', panels: '#1ed760' };
 var FIXED_BASE = { glass: '#16242b', panels: '#1d1d1d' };
+/** Header tint when the cover gives no color: the panels look's accent is
+ * its green, which would flood a page header. */
+var FIXED_TINT = { glass: '#5ad1e6', panels: '#5a5a5a' };
 var WASH_SIZE = 48;
 
 function clamp(n, min, max) {
@@ -125,11 +128,13 @@ function varsCss(settings, palette, washUrl) {
   var look = settings.look;
   var accent = (settings.tint && palette && palette.accent) || FIXED_ACCENT[look];
   var base = (settings.tint && palette && palette.base) || FIXED_BASE[look];
+  var tint = (settings.tint && palette && palette.accent) || FIXED_TINT[look];
   var wash = settings.tint && isWashUrl(washUrl) ? 'url("' + washUrl + '")' : 'none';
   return (
     'html[data-oxa-look="' + look + '"] {' +
     ' --oxa-accent: ' + accent + ';' +
     ' --oxa-base: ' + base + ';' +
+    ' --oxa-tint: ' + tint + ';' +
     ' --oxa-radius: ' + settings.radius + 'px;' +
     ' --oxa-wash: ' + wash + ';' +
     ' --oxa-wash-opacity: ' + settings.backdrop / 100 + ';' +

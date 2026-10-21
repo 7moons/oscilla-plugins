@@ -23,6 +23,12 @@ html[data-oxa-look] ytmusic-search-page {
 html[data-oxa-look] ytmusic-browse-response .background-gradient {
   background: transparent !important;
 }
+/* YouTube Music's own blurred page-artwork background. Oxitune's theme
+   engine hides it only while Ambient Lighting is on; with it off it showed
+   through both looks as a blotchy second backdrop. */
+html[data-oxa-look] ytmusic-browse-response #background.immersive-background {
+  display: none !important;
+}
 
 html[data-oxa-look] {
   --ytmusic-call-to-action: var(--oxa-accent) !important;
@@ -180,4 +186,21 @@ html[data-oxa-look] ytmusic-carousel #items {
 }
 html[data-oxa-look] ytmusic-carousel #items::-webkit-scrollbar {
   display: none !important;
+}
+
+/* Artist hero: YouTube Music fades the photo into its own #030303 page,
+   which ends in a hard edge over this plugin's backgrounds. The photo
+   itself fades out instead, so it melts into either look. */
+html[data-oxa-look] ytmusic-immersive-header-renderer {
+  background: transparent !important;
+}
+html[data-oxa-look] ytmusic-immersive-header-renderer ytmusic-fullbleed-thumbnail-renderer {
+  -webkit-mask-image: linear-gradient(180deg, #000 45%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 45%, transparent 100%);
+}
+html[data-oxa-look] ytmusic-immersive-header-renderer .content-container-wrapper {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.2) 60%, transparent 100%) !important;
+}
+html[data-oxa-look] ytmusic-immersive-header-renderer .gradient-container {
+  background-image: none !important;
 }

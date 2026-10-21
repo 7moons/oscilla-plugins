@@ -114,6 +114,8 @@ describe('Appearance: custom properties', () => {
     expect(off).toContain('--oxa-wash: none;');
     const panels = varsCss(normalizeSettings({ look: 'panels' }), { accent: null, base: '#101010' }, null);
     expect(panels).toContain('--oxa-accent: #1ed760;');
+    expect(panels).toContain('--oxa-tint: #5a5a5a;');
+    expect(varsCss(glass, { accent: '#11aabb', base: '#101820' }, wash)).toContain('--oxa-tint: #11aabb;');
     expect(panels).toContain('--oxa-base: #101010;');
   });
 

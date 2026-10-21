@@ -2,7 +2,7 @@
    panels separated by black gaps; a flat black top bar and player bar;
    bold type; cards that light up on hover with a green play button rising
    into the corner. The page panel's header takes the cover's color
-   (--oxa-accent). */
+   (--oxa-tint, neutral grey when the cover has none). */
 
 html[data-oxa-look="panels"] {
   --oxa-font: 'Oxa Figtree', 'Figtree', system-ui, sans-serif;
@@ -100,7 +100,7 @@ html[data-oxa-look="panels"] ytmusic-app-layout::before {
   bottom: calc(var(--ytmusic-player-bar-height, 0px) + var(--oxa-gap));
   border-radius: var(--oxa-radius);
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--oxa-accent) 38%, var(--oxa-panel)) 0px, var(--oxa-panel) 380px),
+    linear-gradient(180deg, color-mix(in srgb, var(--oxa-tint) 38%, var(--oxa-panel)) 0px, var(--oxa-panel) 380px),
     var(--oxa-panel);
 }
 
@@ -221,7 +221,7 @@ html[data-oxa-look="panels"] ytmusic-player-bar #play-pause-button:hover {
    clip makes the gaps and corners without moving YouTube Music's layout. */
 html[data-oxa-look="panels"] ytmusic-player-page {
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--oxa-accent) 38%, var(--oxa-panel)) 0%, var(--oxa-panel) 60%) !important;
+    linear-gradient(180deg, color-mix(in srgb, var(--oxa-tint) 38%, var(--oxa-panel)) 0%, var(--oxa-panel) 60%) !important;
   background-color: var(--oxa-panel) !important;
   border: 0 !important;
   clip-path: inset(0 var(--oxa-gap) var(--oxa-gap) var(--oxa-gap) round var(--oxa-radius));
@@ -234,4 +234,10 @@ html[data-oxa-look="panels"] .oxitune-lyrics-view {
   --oxitune-lyric-on: #fff !important;
   --oxitune-lyric-off: rgba(255, 255, 255, 0.4) !important;
   --oxitune-lyric-weight: 800 !important;
+}
+
+/* Artist hero inside the page panel: clipped to the panel's edges and top
+   corners instead of running under the sidebar and the gaps. */
+html[data-oxa-look="panels"] ytmusic-immersive-header-renderer {
+  clip-path: inset(var(--ytmusic-nav-bar-height, 64px) var(--oxa-gap) 0 calc(var(--ytmusic-guide-width, 240px) + var(--oxa-gap)) round var(--oxa-radius) var(--oxa-radius) 0 0);
 }

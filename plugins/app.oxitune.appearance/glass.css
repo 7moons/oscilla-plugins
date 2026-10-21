@@ -193,6 +193,16 @@ html[data-oxa-floating="true"] ytmusic-player-bar {
   border-radius: calc(var(--oxa-radius) + 10px) !important;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
 }
+/* YouTube Music ends the now-playing page where its full-width bar starts
+   (bottom: 72px); with the bar floating, that left an empty band around
+   the pill. The page runs to the window's bottom and keeps its content
+   clear of the pill with padding instead. */
+html[data-oxa-floating="true"] ytmusic-player-page {
+  bottom: 0 !important;
+  height: auto !important;
+  padding-bottom: calc(var(--ytmusic-player-bar-height, 72px) + 14px) !important;
+  box-sizing: border-box !important;
+}
 /* Room under the last row of a page for the raised bar. */
 html[data-oxa-floating="true"] ytmusic-app-layout[player-visible_] > #content {
   padding-bottom: 14px;
