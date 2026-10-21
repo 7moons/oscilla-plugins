@@ -195,12 +195,13 @@ html[data-oxa-look="panels"] ytmusic-responsive-list-item-renderer:hover {
    button. */
 html[data-oxa-look="panels"] ytmusic-player-bar {
   grid-template-columns: 56px minmax(0, 1fr) auto auto minmax(0, 150px) auto auto auto minmax(0, 150px) minmax(0, 1fr) auto auto auto auto auto auto !important;
-  grid-template-rows: 42px 18px !important;
+  grid-template-rows: 40px 12px !important;
   grid-template-areas:
     "art info like menu . shuffle transport repeat . . cc dl pip vol volslider page"
     "art info like menu progress progress progress progress time . cc dl pip vol volslider page" !important;
   align-content: center !important;
   padding: 0 16px 0 8px !important;
+  column-gap: 8px !important;
   box-sizing: border-box !important;
   /* Paints the gap above the bar black, so the page scrolling under the
      panel's bottom edge doesn't show through it. */
@@ -226,11 +227,10 @@ html[data-oxa-look="panels"] ytmusic-player-bar #play-pause-button {
   border-radius: 50% !important;
   color: #000 !important;
   --iron-icon-fill-color: #000 !important;
-  transform: scale(0.72);
   transition: transform 0.15s ease;
 }
 html[data-oxa-look="panels"] ytmusic-player-bar #play-pause-button:hover {
-  transform: scale(0.78);
+  transform: scale(1.06);
 }
 
 /* Now playing: a panel of its own with the cover's color at the top. The
@@ -270,8 +270,12 @@ html[data-oxa-look="panels"] ytmusic-player-bar .thumbnail-image-wrapper img {
 html[data-oxa-look="panels"] ytmusic-player-bar .content-info-wrapper {
   padding-left: 12px !important;
 }
+/* The slider's own container is 34px; it keeps that height so its track
+   is centred, and negative margins fit it into the 12px row. Rows of 40 and
+   12 put the transport 13px above the bar's middle and the track 13px
+   below it, so the pair is centred against the song info. */
 html[data-oxa-look="panels"] ytmusic-player-bar #progress-bar {
-  height: 18px !important;
+  margin: -11px 0 !important;
 }
 html[data-oxa-look="panels"] ytmusic-player-bar .time-info {
   color: var(--oxa-muted) !important;
@@ -301,4 +305,14 @@ html[data-oxa-look="panels"] ytmusic-navigation-button-renderer[button-style="ST
 html[data-oxa-look="panels"] ytmusic-navigation-button-renderer[button-style="STYLE_SOLID"] yt-formatted-string {
   font-weight: 700 !important;
   font-size: 15px !important;
+}
+
+html[data-oxa-look="panels"] ytmusic-search-box #suggestion-list {
+  background: #282828 !important;
+}
+
+/* Cards carry 12px of padding for their hover tile; the carousel moves
+   left by as much, so the covers line up with the section title. */
+html[data-oxa-look="panels"] ytmusic-carousel-shelf-renderer ytmusic-carousel {
+  transform: translateX(-12px);
 }
