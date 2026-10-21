@@ -13,7 +13,8 @@ const {
   boxBlur,
   gradeWash,
   headColor,
-  pageArtUrl
+  pageArtUrl,
+  formatTime
 } = require('./main.js');
 
 /** RGBA pixels: `n` copies of each [r, g, b] (alpha 255). */
@@ -25,16 +26,33 @@ function pixels(...runs: [number[], number][]): Uint8ClampedArray {
 
 describe('Appearance: settings', () => {
   test('defaults for missing or broken values', () => {
-    expect(normalizeSettings(undefined)).toEqual({ look: 'glass', tint: true, floating: true, radius: 12, backdrop: 70 });
+    expect(normalizeSettings(undefined)).toEqual({ look: 'glass', font: 'look', tint: true, floating: true, radius: 12, backdrop: 70 });
     expect(normalizeSettings({ look: 'nope', radius: 'x', backdrop: null })).toEqual({
-      look: 'glass', tint: true, floating: true, radius: 12, backdrop: 70
+      look: 'glass', font: 'look', tint: true, floating: true, radius: 12, backdrop: 70
     });
   });
 
   test('numbers are clamped to the manifest range', () => {
     const s = normalizeSettings({ look: 'panels', tint: false, floating_bar: false, radius: 99, backdrop: -5 });
-    expect(s).toEqual({ look: 'panels', tint: false, floating: false, radius: 28, backdrop: 0 });
+    expect(s).toEqual({ look: 'panels', font: 'look', tint: false, floating: false, radius: 28, backdrop: 0 });
     expect(normalizeSettings({ radius: 0 }).radius).toBe(0);
+  });
+
+  test('a chosen font overrides the look’s; an unknown one falls back to it', () => {
+    expect(varsCss(normalizeSettings({ look: 'glass', font: 'manrope' }), null, null)).toContain("--oxa-font: 'Oxa Manrope', system-ui, sans-serif !important;");
+    expect(varsCss(normalizeSettings({ look: 'glass', font: 'look' }), null, null)).not.toContain('--oxa-font');
+    expect(normalizeSettings({ font: 'comic-sans' }).font).toBe('look');
+    expect(normalizeSettings({ font: 'toString' }).font).toBe('look');
+  });
+
+  test('every font option in the manifest is known and embedded', () => {
+    const manifest = JSON.parse(readFileSync(join(import.meta.dir, 'manifest.json'), 'utf8'));
+    const options = manifest.settings.find((s: { key: string }) => s.key === 'font').options.map((o: { value: string }) => o.value);
+    for (const font of options) {
+      expect(normalizeSettings({ font }).font).toBe(font);
+      if (font === 'look' || font === 'youtube') continue;
+      expect(manifest.styles).toContain(`font-${font}.css`);
+    }
   });
 
   test('the floating bar belongs to the glass look only', () => {
@@ -165,6 +183,24 @@ describe('Appearance: page header color (panels)', () => {
     expect(pageArtUrl(doc({ [album]: { src: 'https://yt3.example/b' } }))).toBe('https://yt3.example/b');
     expect(pageArtUrl(doc({ [album]: { src: 'data:image/gif;base64,R0lG' } }))).toBeNull();
     expect(pageArtUrl(doc({}))).toBeNull();
+  });
+});
+
+describe('Appearance: time labels', () => {
+  test('minutes and seconds, hours when needed', () => {
+    expect(formatTime(0)).toBe('0:00');
+    expect(formatTime(14.9)).toBe('0:14');
+    expect(formatTime(202)).toBe('3:22');
+    expect(formatTime(3599)).toBe('59:59');
+    expect(formatTime(3600)).toBe('1:00:00');
+    expect(formatTime(3725)).toBe('1:02:05');
+  });
+
+  test('nothing usable reads 0:00', () => {
+    expect(formatTime(NaN)).toBe('0:00');
+    expect(formatTime(-5)).toBe('0:00');
+    expect(formatTime(undefined)).toBe('0:00');
+    expect(formatTime(Infinity)).toBe('0:00');
   });
 });
 

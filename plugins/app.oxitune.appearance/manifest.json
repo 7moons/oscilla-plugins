@@ -11,7 +11,7 @@
   "permissions": ["player:read", "page", "ui"],
   "hosts": [],
   "entry": "main.js",
-  "styles": ["font-inter.css", "font-figtree.css", "common.css", "glass.css", "panels.css"],
+  "styles": ["font-inter.css", "font-figtree.css", "font-geist.css", "font-manrope.css", "font-plus-jakarta-sans.css", "font-dm-sans.css", "common.css", "glass.css", "panels.css"],
   "settings": [
     {
       "key": "look",
@@ -21,6 +21,22 @@
       "options": [
         { "value": "glass", "label": { "en": "Glass: translucent glass over the cover art", "pl": "Szkło: półprzezroczyste szkło na tle okładki" } },
         { "value": "panels", "label": { "en": "Panels: rounded panels on black", "pl": "Panele: zaokrąglone panele na czerni" } }
+      ]
+    },
+    {
+      "key": "font",
+      "type": "select",
+      "label": { "en": "Font", "pl": "Czcionka" },
+      "default": "look",
+      "options": [
+        { "value": "look", "label": { "en": "The look's own (Inter / Figtree)", "pl": "Wyglądu (Inter / Figtree)" } },
+        { "value": "inter", "label": "Inter" },
+        { "value": "figtree", "label": "Figtree" },
+        { "value": "geist", "label": "Geist" },
+        { "value": "manrope", "label": "Manrope" },
+        { "value": "plus-jakarta-sans", "label": "Plus Jakarta Sans" },
+        { "value": "dm-sans", "label": "DM Sans" },
+        { "value": "youtube", "label": { "en": "YouTube Music's (Roboto)", "pl": "YouTube Music (Roboto)" } }
       ]
     },
     {

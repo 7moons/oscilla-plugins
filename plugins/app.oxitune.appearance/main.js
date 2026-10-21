@@ -8,6 +8,17 @@
 // writes inline styles on YouTube Music's own (Polymer) elements.
 
 var LOOKS = ['glass', 'panels'];
+/** Font setting -> font-family; 'look' keeps the look's own (glass.css,
+ * panels.css). The 'Oxa *' families are embedded by the font-*.css files. */
+var FONTS = {
+  inter: "'Oxa Inter'",
+  figtree: "'Oxa Figtree'",
+  geist: "'Oxa Geist'",
+  manrope: "'Oxa Manrope'",
+  'plus-jakarta-sans': "'Oxa Plus Jakarta Sans'",
+  'dm-sans': "'Oxa DM Sans'",
+  youtube: "'YouTube Sans', Roboto"
+};
 /** Accent when the cover has no usable color or tinting is off. */
 var FIXED_ACCENT = { glass: '#5ad1e6', panels: '#1ed760' };
 var FIXED_BASE = { glass: '#16242b', panels: '#1d1d1d' };
@@ -28,6 +39,7 @@ function normalizeSettings(values) {
   var backdrop = Number(v.backdrop);
   return {
     look: LOOKS.indexOf(v.look) >= 0 ? v.look : 'glass',
+    font: FONTS.hasOwnProperty(v.font) ? v.font : 'look',
     tint: v.tint !== false,
     floating: v.floating_bar !== false,
     radius: isFinite(radius) && v.radius !== null && v.radius !== '' ? Math.round(clamp(radius, 0, 28)) : 12,
@@ -166,6 +178,7 @@ function varsCss(settings, palette, washUrl, page) {
     ' --oxa-radius: ' + settings.radius + 'px;' +
     ' --oxa-wash: ' + wash + ';' +
     ' --oxa-wash-opacity: ' + settings.backdrop / 100 + ';' +
+    (settings.font !== 'look' ? ' --oxa-font: ' + FONTS[settings.font] + ', system-ui, sans-serif !important;' : '') +
     ' }'
   );
 }
@@ -246,6 +259,65 @@ function renderCover(doc, url, withWash) {
   });
 }
 
+/** "m:ss", or "h:mm:ss" from an hour; "0:00" for anything unusable. */
+function formatTime(secs) {
+  var t = Math.floor(Number(secs));
+  if (!isFinite(t) || t < 0) t = 0;
+  var h = Math.floor(t / 3600);
+  var m = Math.floor((t % 3600) / 60);
+  var sec = t % 60;
+  var ss = (sec < 10 ? '0' : '') + sec;
+  if (h > 0) return h + ':' + (m < 10 ? '0' : '') + m + ':' + ss;
+  return m + ':' + ss;
+}
+
+/** Elapsed and total time as two labels on either side of the progress
+ * line. YouTube Music writes them as one string ("0:14 / 3:22") that CSS
+ * can't split; these are the plugin's own elements in the bar's grid
+ * (areas "elapsed" and "total"), and YouTube Music's string is hidden. */
+function createTimeLabels(doc, player) {
+  var elapsed = doc.createElement('span');
+  var total = doc.createElement('span');
+  elapsed.className = 'oxa-time oxa-time-elapsed';
+  total.className = 'oxa-time oxa-time-total';
+  elapsed.setAttribute('aria-hidden', 'true');
+  total.setAttribute('aria-hidden', 'true');
+  var shown = { e: null, t: null };
+
+  function attach() {
+    var bar = doc.querySelector('ytmusic-player-bar');
+    if (!bar) return false;
+    if (elapsed.parentNode !== bar) bar.appendChild(elapsed);
+    if (total.parentNode !== bar) bar.appendChild(total);
+    return true;
+  }
+
+  function show(position, duration) {
+    if (!attach()) return;
+    var e = formatTime(position);
+    var t = formatTime(duration);
+    if (e !== shown.e) elapsed.textContent = shown.e = e;
+    if (t !== shown.t) total.textContent = shown.t = t;
+  }
+
+  function refresh() {
+    var track = player.getTrack();
+    if (track) show(track.currentTimeSecs, track.durationSecs);
+  }
+
+  return {
+    refresh: refresh,
+    tick: function (position) {
+      var track = player.getTrack();
+      show(position, track ? track.durationSecs : 0);
+    },
+    remove: function () {
+      if (elapsed.parentNode) elapsed.parentNode.removeChild(elapsed);
+      if (total.parentNode) total.parentNode.removeChild(total);
+    }
+  };
+}
+
 function start(oxitune) {
   var doc = oxitune.page.document;
   var root = doc.documentElement;
@@ -318,6 +390,14 @@ function start(oxitune) {
   watchPage();
   onTrack(oxitune.player.getTrack());
   oxitune.player.onTrackChange(onTrack);
+
+  // onTick only fires while playing; the interval covers seeking while
+  // paused and a new song's duration arriving after the track change.
+  var times = createTimeLabels(doc, oxitune.player);
+  times.refresh();
+  oxitune.player.onTick(times.tick);
+  oxitune.player.onTrackChange(times.refresh);
+  var timesTimer = setInterval(times.refresh, 1000);
   oxitune.settings.onChange(function (values) {
     settings = normalizeSettings(values);
     applyAttributes();
@@ -325,6 +405,8 @@ function start(oxitune) {
     applyVars();
   });
   oxitune.onUnload(function () {
+    clearInterval(timesTimer);
+    times.remove();
     if (pageTimer) clearInterval(pageTimer);
     if (removeVars) removeVars();
     root.removeAttribute('data-oxa-look');
@@ -338,6 +420,7 @@ if (typeof oxitune !== 'undefined') {
 
 if (typeof module !== 'undefined') {
   module.exports = {
+    formatTime: formatTime,
     normalizeSettings: normalizeSettings,
     pickPalette: pickPalette,
     rgbToHsl: rgbToHsl,
