@@ -76,45 +76,92 @@ html[data-oxa-look] ytmusic-two-row-item-renderer .subtitle {
   line-height: 1.4 !important;
 }
 
-/* Player bar: cover and title on the left, the transport in the middle with
-   the progress bar under it, the rest on the right. The three areas are
-   YouTube Music's own (start = transport, middle = song, end = volume). */
+/* Player bar, rebuilt. YouTube Music groups its controls in three boxes
+   (#left-controls: transport and time; .middle-controls: cover, title,
+   like, and Oxitune's mini player button; #right-controls: volume,
+   repeat, shuffle, the rest). Those boxes are flattened with
+   display: contents, so every control is a grid item of the bar itself and
+   each look places it by name (glass.css, panels.css). The transport stays
+   one group (.left-controls-buttons). Areas a look doesn't name are left
+   out of its grid template and their controls hidden. */
+html[data-oxa-look] ytmusic-player-bar #left-controls,
+html[data-oxa-look] ytmusic-player-bar .middle-controls,
+html[data-oxa-look] ytmusic-player-bar .middle-controls-buttons,
+html[data-oxa-look] ytmusic-player-bar #right-controls,
+html[data-oxa-look] ytmusic-player-bar .right-controls-buttons {
+  display: contents !important;
+}
 html[data-oxa-look] ytmusic-player-bar {
-  grid-template-columns: minmax(0, 1.3fr) auto minmax(0, 1fr) !important;
-  grid-template-areas: "middle start end" !important;
+  display: grid !important;
+  align-items: center !important;
+  column-gap: 4px !important;
 }
-html[data-oxa-look] ytmusic-player-bar .middle-controls {
-  justify-content: flex-start !important;
-  padding-left: 12px !important;
+html[data-oxa-look] ytmusic-player-bar .thumbnail-image-wrapper { grid-area: art !important; }
+html[data-oxa-look] ytmusic-player-bar .content-info-wrapper {
+  grid-area: info !important;
   min-width: 0 !important;
+  overflow: hidden !important;
 }
-html[data-oxa-look] ytmusic-player-bar #left-controls {
+html[data-oxa-look] ytmusic-player-bar #like-button-renderer { grid-area: like !important; }
+html[data-oxa-look] ytmusic-player-bar #oxitune-pip-btn { grid-area: pip !important; }
+html[data-oxa-look] ytmusic-player-bar .menu { grid-area: menu !important; }
+html[data-oxa-look] ytmusic-player-bar .left-controls-buttons {
+  grid-area: transport !important;
+  display: flex !important;
+  align-items: center !important;
   justify-content: center !important;
-  padding-bottom: 14px !important;
 }
-html[data-oxa-look] ytmusic-player-bar #right-controls {
-  justify-content: flex-end !important;
+html[data-oxa-look] ytmusic-player-bar .time-info {
+  grid-area: time !important;
+  font-size: 11px !important;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap !important;
+  margin: 0 !important;
+}
+html[data-oxa-look] ytmusic-player-bar #progress-bar {
+  grid-area: progress !important;
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  width: auto !important;
+  margin: 0 !important;
+  min-width: 0 !important;
+  --paper-slider-height: 4px !important;
+  --paper-slider-container-color: rgba(255, 255, 255, 0.18) !important;
+}
+html[data-oxa-look] ytmusic-player-bar .shuffle { grid-area: shuffle !important; }
+html[data-oxa-look] ytmusic-player-bar .repeat { grid-area: repeat !important; }
+html[data-oxa-look] ytmusic-player-bar .oxitune-dl-button { grid-area: dl !important; }
+html[data-oxa-look] ytmusic-player-bar .volume { grid-area: vol !important; }
+html[data-oxa-look] ytmusic-player-bar .captions { grid-area: cc !important; }
+/* The volume slider takes no room until the speaker or the slider is
+   hovered (YouTube Music only fades it in then anyway). */
+html[data-oxa-look] ytmusic-player-bar #volume-slider {
+  grid-area: volslider !important;
+  width: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  transition: width 0.2s ease;
+}
+html[data-oxa-look] ytmusic-player-bar:has(.volume:hover, #volume-slider:hover) #volume-slider {
+  width: 88px !important;
+}
+html[data-oxa-look] ytmusic-player-bar .toggle-player-page-button { grid-area: page !important; }
+html[data-oxa-look] ytmusic-player-bar .playback-rate,
+html[data-oxa-look] ytmusic-player-bar .expand-button,
+html[data-oxa-look] ytmusic-player-bar #expanding-menu,
+html[data-oxa-look] ytmusic-player-bar .exit-fullscreen-button {
+  display: none !important;
 }
 html[data-oxa-look] ytmusic-player-bar .title {
   font-size: 14px !important;
   font-weight: 600 !important;
 }
 html[data-oxa-look] ytmusic-player-bar .byline {
-  font-size: 13px !important;
-}
-html[data-oxa-look] ytmusic-player-bar .time-info {
-  font-size: 11px !important;
-  font-variant-numeric: tabular-nums;
-}
-html[data-oxa-look] ytmusic-player-bar #progress-bar {
-  top: auto !important;
-  bottom: 0 !important;
-  transform: none !important;
-  left: 50% !important;
-  width: var(--oxa-progress-width, 40%) !important;
-  margin-left: calc(var(--oxa-progress-width, 40%) / -2) !important;
-  --paper-slider-height: 4px !important;
-  --paper-slider-container-color: rgba(255, 255, 255, 0.18) !important;
+  font-size: 12px !important;
 }
 html[data-oxa-look] ytmusic-player-bar tp-yt-paper-slider {
   --paper-slider-active-color: var(--oxa-accent) !important;

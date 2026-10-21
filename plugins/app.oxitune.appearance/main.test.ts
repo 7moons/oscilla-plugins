@@ -182,7 +182,20 @@ describe('Appearance: stylesheets', () => {
       const css = raw.replace(/@font-face\s*\{[^}]*\}/g, '').replace(/@property\s+[\w-]+\s*\{[^}]*\}/g, '');
       const selectors = css.match(/[^{}]+(?=\{)/g) ?? [];
       for (const group of selectors) {
-        for (const selector of group.split(',')) {
+        // Commas inside :has(...) or :not(...) don't start a new selector.
+        const parts: string[] = [];
+        let depth = 0;
+        let current = '';
+        for (const ch of group) {
+          if (ch === '(') depth++;
+          if (ch === ')') depth--;
+          if (ch === ',' && depth === 0) {
+            parts.push(current);
+            current = '';
+          } else current += ch;
+        }
+        parts.push(current);
+        for (const selector of parts) {
           expect(selector.trim()).toMatch(/^html\[data-oxa-(look|floating)/);
         }
       }

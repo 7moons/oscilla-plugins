@@ -194,7 +194,14 @@ html[data-oxa-look="panels"] ytmusic-responsive-list-item-renderer:hover {
 /* Player bar: white progress that turns green on hover, a white round play
    button. */
 html[data-oxa-look="panels"] ytmusic-player-bar {
-  --oxa-progress-width: min(560px, 40%);
+  grid-template-columns: 56px minmax(0, 1fr) auto auto minmax(0, 150px) auto auto auto minmax(0, 150px) minmax(0, 1fr) auto auto auto auto auto auto !important;
+  grid-template-rows: 42px 18px !important;
+  grid-template-areas:
+    "art info like menu . shuffle transport repeat . . cc dl pip vol volslider page"
+    "art info like menu progress progress progress progress time . cc dl pip vol volslider page" !important;
+  align-content: center !important;
+  padding: 0 16px 0 8px !important;
+  box-sizing: border-box !important;
   /* Paints the gap above the bar black, so the page scrolling under the
      panel's bottom edge doesn't show through it. */
   box-shadow: 0 calc(-1 * var(--oxa-gap)) 0 #000 !important;
@@ -249,4 +256,49 @@ html[data-oxa-look="panels"] .oxitune-lyrics-view {
    corners instead of running under the sidebar and the gaps. */
 html[data-oxa-look="panels"] ytmusic-immersive-header-renderer {
   clip-path: inset(var(--ytmusic-nav-bar-height, 64px) var(--oxa-gap) 0 calc(var(--ytmusic-guide-width, 240px) + var(--oxa-gap)) round var(--oxa-radius) var(--oxa-radius) 0 0);
+}
+
+/* Player bar details: a 56px cover, the transport over a wide progress
+   line, the time at its end. */
+html[data-oxa-look="panels"] ytmusic-player-bar .thumbnail-image-wrapper,
+html[data-oxa-look="panels"] ytmusic-player-bar .thumbnail-image-wrapper img {
+  width: 56px !important;
+  height: 56px !important;
+  margin: 0 !important;
+  object-fit: cover !important;
+}
+html[data-oxa-look="panels"] ytmusic-player-bar .content-info-wrapper {
+  padding-left: 12px !important;
+}
+html[data-oxa-look="panels"] ytmusic-player-bar #progress-bar {
+  height: 18px !important;
+}
+html[data-oxa-look="panels"] ytmusic-player-bar .time-info {
+  color: var(--oxa-muted) !important;
+  padding-left: 8px !important;
+  align-self: center !important;
+}
+html[data-oxa-look="panels"] ytmusic-player-bar .shuffle,
+html[data-oxa-look="panels"] ytmusic-player-bar .repeat {
+  justify-self: center !important;
+}
+
+/* Mood and genre tiles: no colored stripe down the side. Each tile is
+   filled with its mood's color (YouTube Music's own
+   --ytmusic-navigation-button-left-stripe-color), deepened toward the
+   corner, with bold white type. */
+html[data-oxa-look="panels"] ytmusic-navigation-button-renderer[button-style="STYLE_SOLID"] button {
+  border: 0 !important;
+  border-radius: var(--oxa-radius) !important;
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--ytmusic-navigation-button-left-stripe-color, #555) 80%, #000) 0%,
+    color-mix(in srgb, var(--ytmusic-navigation-button-left-stripe-color, #555) 45%, #000) 100%) !important;
+  transition: filter 0.2s ease;
+}
+html[data-oxa-look="panels"] ytmusic-navigation-button-renderer[button-style="STYLE_SOLID"] button:hover {
+  filter: brightness(1.15);
+}
+html[data-oxa-look="panels"] ytmusic-navigation-button-renderer[button-style="STYLE_SOLID"] yt-formatted-string {
+  font-weight: 700 !important;
+  font-size: 15px !important;
 }

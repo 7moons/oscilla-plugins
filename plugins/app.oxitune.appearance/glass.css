@@ -160,7 +160,11 @@ html[data-oxa-look="glass"] ytmusic-responsive-list-item-renderer:hover {
 
 /* Player: a frosted pill tinted with the cover's accent. */
 html[data-oxa-look="glass"] ytmusic-player-bar {
-  --oxa-progress-width: min(460px, 38%);
+  grid-template-columns: 48px minmax(150px, 1fr) auto auto 14px auto auto auto 18px minmax(120px, 1fr) auto 16px auto auto auto auto auto auto !important;
+  grid-template-rows: 100% !important;
+  grid-template-areas: "art info like menu . shuffle transport repeat . progress time . vol volslider cc dl pip page" !important;
+  padding: 0 14px 0 12px !important;
+  box-sizing: border-box !important;
   background: var(--oxa-glass) !important;
   backdrop-filter: blur(24px) saturate(150%) !important;
   -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
@@ -184,11 +188,11 @@ html[data-oxa-look="glass"] ytmusic-player-bar #play-pause-button:hover {
   transform: scale(0.88);
 }
 
-/* Floating: a pill above the bottom edge, at most 1120px wide. */
+/* Floating: a pill above the bottom edge, at most 1240px wide. */
 html[data-oxa-floating="true"] ytmusic-player-bar {
   bottom: 14px !important;
-  left: max(14px, calc(50vw - 560px)) !important;
-  width: min(1120px, calc(100vw - 28px)) !important;
+  left: max(14px, calc(50vw - 620px)) !important;
+  width: min(1240px, calc(100vw - 28px)) !important;
   border: 1px solid var(--oxa-hairline) !important;
   border-radius: calc(var(--oxa-radius) + 10px) !important;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
@@ -228,4 +232,45 @@ html[data-oxa-look="glass"] .oxitune-lyrics-view {
   --oxitune-lyric-on: color-mix(in srgb, var(--oxa-accent) 22%, white) !important;
   --oxitune-lyric-off: rgba(255, 255, 255, 0.3) !important;
   --oxitune-lyric-weight: 800 !important;
+}
+
+/* Player bar details: a 48px cover, the title over the artist, a tight
+   transport around the accent play button, a slim progress line. */
+html[data-oxa-look="glass"] ytmusic-player-bar .thumbnail-image-wrapper,
+html[data-oxa-look="glass"] ytmusic-player-bar .thumbnail-image-wrapper img {
+  width: 48px !important;
+  height: 48px !important;
+  margin: 0 !important;
+  object-fit: cover !important;
+}
+html[data-oxa-look="glass"] ytmusic-player-bar .content-info-wrapper {
+  padding-left: 10px !important;
+}
+html[data-oxa-look="glass"] ytmusic-player-bar .left-controls-buttons {
+  gap: 2px;
+}
+html[data-oxa-look="glass"] ytmusic-player-bar .time-info {
+  color: var(--oxa-muted) !important;
+  padding-left: 10px !important;
+}
+html[data-oxa-look="glass"] ytmusic-player-bar #progress-bar {
+  height: 20px !important;
+}
+
+/* Mood and genre tiles: no colored stripe down the side. The mood's color
+   (YouTube Music's own --ytmusic-navigation-button-left-stripe-color)
+   glows up from the tile's corner instead, as if lit from below. */
+html[data-oxa-look="glass"] ytmusic-navigation-button-renderer[button-style="STYLE_SOLID"] button {
+  border: 1px solid var(--oxa-hairline) !important;
+  border-radius: var(--oxa-radius) !important;
+  background:
+    radial-gradient(140% 160% at 0% 100%, color-mix(in srgb, var(--ytmusic-navigation-button-left-stripe-color, #888) 55%, transparent) 0%, transparent 62%),
+    var(--oxa-frost) !important;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+html[data-oxa-look="glass"] ytmusic-navigation-button-renderer[button-style="STYLE_SOLID"] button:hover {
+  transform: translateY(-2px);
+}
+html[data-oxa-look="glass"] ytmusic-navigation-button-renderer[button-style="STYLE_SOLID"] yt-formatted-string {
+  font-weight: 600 !important;
 }
