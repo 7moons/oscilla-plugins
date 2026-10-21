@@ -28,6 +28,7 @@
 | `app.oxitune.example-theme` | The smallest useful plugin: tints the progress bar and buttons with an accent you pick | `ui` |
 | `app.oxitune.sponsorblock` | Skips intros, outros and other non-music parts of music videos, using the community SponsorBlock database | `player:read`, `player:control`, `network` (`sponsor.ajay.app`) |
 | `app.oxitune.adblock` | Removes ad scheduling from YouTube Music's responses and mutes, hides and skips what slips through, never touching playback timing | `player:read`, `page`, `ui` |
+| `app.oxitune.appearance` | Two alternative looks: translucent glass over a blurred wash of the cover art with a floating player bar, or rounded panels on black; colors follow the cover | `player:read`, `page`, `ui` |
 | `app.oxitune.downloader` | A player-bar button that saves the current song to your music folder with [yt-dlp](https://github.com/yt-dlp/yt-dlp), which you choose to install | `player:read`, `page`, `ui`, `media:save` |
 
 Install them in Oxitune under **Settings → Plugins**. You see each plugin's permissions before it

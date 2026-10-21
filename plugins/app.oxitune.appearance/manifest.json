@@ -1,0 +1,58 @@
+{
+  "id": "app.oxitune.appearance",
+  "name": "Alternative appearance",
+  "version": "1.0.0",
+  "apiVersion": 1,
+  "description": "Two new looks for YouTube Music: translucent glass over the blurred cover art with a floating player bar, or rounded panels on black.",
+  "author": "Oxitune",
+  "homepage": "https://github.com/7moons/oxitune-plugins",
+  "matches": ["https://music.youtube.com/*"],
+  "runAt": "document-idle",
+  "permissions": ["player:read", "page", "ui"],
+  "hosts": [],
+  "entry": "main.js",
+  "styles": ["common.css", "glass.css", "panels.css"],
+  "settings": [
+    {
+      "key": "look",
+      "type": "select",
+      "label": { "en": "Look", "pl": "Wygląd" },
+      "default": "glass",
+      "options": [
+        { "value": "glass", "label": { "en": "Glass: translucent glass over the cover art", "pl": "Szkło: półprzezroczyste szkło na tle okładki" } },
+        { "value": "panels", "label": { "en": "Panels: rounded panels on black", "pl": "Panele: zaokrąglone panele na czerni" } }
+      ]
+    },
+    {
+      "key": "tint",
+      "type": "boolean",
+      "label": { "en": "Take colors from the cover", "pl": "Kolory z okładki" },
+      "description": { "en": "Off: a fixed accent for the look.", "pl": "Wyłączone: stały akcent dla wyglądu." },
+      "default": true
+    },
+    {
+      "key": "floating_bar",
+      "type": "boolean",
+      "label": { "en": "Floating player bar", "pl": "Pływający pasek odtwarzacza" },
+      "description": { "en": "Glass look only.", "pl": "Tylko w wyglądzie Szkło." },
+      "default": true
+    },
+    {
+      "key": "radius",
+      "type": "number",
+      "label": { "en": "Corner roundness (px)", "pl": "Zaokrąglenie rogów (px)" },
+      "default": 12,
+      "min": 0,
+      "max": 28
+    },
+    {
+      "key": "backdrop",
+      "type": "number",
+      "label": { "en": "Cover backdrop strength (%)", "pl": "Siła tła z okładki (%)" },
+      "description": { "en": "Glass look only.", "pl": "Tylko w wyglądzie Szkło." },
+      "default": 70,
+      "min": 0,
+      "max": 100
+    }
+  ]
+}

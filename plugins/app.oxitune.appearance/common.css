@@ -1,0 +1,76 @@
+/* Shared by both looks. Every rule is scoped to html[data-oxa-look], which
+   main.js sets, so switching the plugin off (attribute removed, styles
+   dropped) leaves YouTube Music exactly as it was. Rules use YouTube Music's
+   own custom properties where it has them and plain declarative selectors
+   otherwise: never inline styles on its Polymer elements. */
+
+/* This plugin owns the page background; Oxitune's built-in ambient wash
+   would sit on top of it. */
+html[data-oxa-look] #oxitune-ambient-backdrop {
+  display: none !important;
+}
+
+/* The page shows through YouTube Music's containers to the backdrop
+   (body::before in glass.css, flat black in panels.css). body stays
+   transparent so its own background doesn't paint over that layer. */
+html[data-oxa-look] body,
+html[data-oxa-look] ytmusic-app-layout,
+html[data-oxa-look] #browse-page,
+html[data-oxa-look] ytmusic-browse-response,
+html[data-oxa-look] ytmusic-search-page {
+  background-color: transparent !important;
+}
+html[data-oxa-look] ytmusic-browse-response .background-gradient {
+  background: transparent !important;
+}
+
+html[data-oxa-look] {
+  --ytmusic-call-to-action: var(--oxa-accent) !important;
+  --yt-spec-call-to-action: var(--oxa-accent) !important;
+  --yt-sys-color-baseline--call-to-action: var(--oxa-accent) !important;
+  --yt-sys-color-baseline--call-to-action-inverse: var(--oxa-accent) !important;
+  --yt-sys-color-baseline--overlay-call-to-action: var(--oxa-accent) !important;
+  --paper-input-container-focus-color: var(--oxa-accent) !important;
+  --paper-tabs-selection-bar-color: var(--oxa-accent) !important;
+}
+
+/* Progress and volume follow the accent. */
+html[data-oxa-look] ytmusic-player-bar tp-yt-paper-slider,
+html[data-oxa-look] ytmusic-player-bar #progress-bar {
+  --paper-slider-active-color: var(--oxa-accent) !important;
+  --paper-slider-knob-color: var(--oxa-accent) !important;
+  --paper-slider-container-color: rgba(255, 255, 255, 0.18) !important;
+}
+html[data-oxa-look] tp-yt-paper-slider #primaryProgress.tp-yt-paper-slider {
+  background-color: var(--oxa-accent) !important;
+}
+
+/* Rounded artwork. The radius goes on the image, so a circular artist
+   thumbnail (clipped round by its wrapper) stays a circle. */
+html[data-oxa-look] ytmusic-two-row-item-renderer yt-img-shadow img,
+html[data-oxa-look] ytmusic-two-row-item-renderer ytmusic-thumbnail-renderer img,
+html[data-oxa-look] ytmusic-two-row-item-renderer ytmusic-item-thumbnail-overlay-renderer {
+  border-radius: var(--oxa-radius) !important;
+}
+html[data-oxa-look] ytmusic-responsive-list-item-renderer yt-img-shadow img,
+html[data-oxa-look] ytmusic-responsive-list-item-renderer ytmusic-thumbnail-renderer img,
+html[data-oxa-look] ytmusic-player-bar .thumbnail-image-wrapper img,
+html[data-oxa-look] ytmusic-player-bar img.image {
+  border-radius: calc(var(--oxa-radius) / 2) !important;
+}
+html[data-oxa-look] ytmusic-player-page #song-image img {
+  border-radius: var(--oxa-radius) !important;
+}
+
+/* Chips as pills. */
+html[data-oxa-look] ytmusic-chip-cloud-chip-renderer a,
+html[data-oxa-look] ytmusic-chip-cloud-chip-renderer .gradient-box {
+  border-radius: 999px !important;
+}
+
+/* Menus and dialogs pick up the corner radius. */
+html[data-oxa-look] ytmusic-menu-popup-renderer,
+html[data-oxa-look] tp-yt-paper-dialog,
+html[data-oxa-look] tp-yt-paper-listbox {
+  border-radius: var(--oxa-radius) !important;
+}

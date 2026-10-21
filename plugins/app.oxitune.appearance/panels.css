@@ -1,0 +1,145 @@
+/* Panels: the sidebar, the page and the now-playing view as rounded dark
+   panels separated by black gaps, a flat black top bar and player bar, a
+   white play button. The page panel's header takes a gradient from the
+   cover's color (--oxa-base). */
+
+html[data-oxa-look="panels"] {
+  --oxa-gap: 8px;
+  --oxa-panel: #121212;
+  --oxa-raised: #1f1f1f;
+  --oxa-muted: #b3b3b3;
+  background: #000 !important;
+  --ytmusic-brand-background-solid: #000 !important;
+  --yt-sys-color-baseline--raised-background: #282828 !important;
+  --yt-sys-color-baseline--menu-background: #282828 !important;
+  --paper-menu-background-color: #282828 !important;
+  --paper-dialog-background-color: #282828 !important;
+  --ytmusic-badge-chip-background: #2a2a2a !important;
+  --ytmusic-explore-chip-background: #2a2a2a !important;
+}
+
+/* Top bar and player bar: flat black, no borders. */
+html[data-oxa-look="panels"] ytmusic-nav-bar,
+html[data-oxa-look="panels"] ytmusic-app-layout #nav-bar-background,
+html[data-oxa-look="panels"] ytmusic-player-bar,
+html[data-oxa-look="panels"] ytmusic-app-layout #player-bar-background {
+  background: #000 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+html[data-oxa-look="panels"] ytmusic-search-box .search-box {
+  background: var(--oxa-raised) !important;
+  border: 1px solid transparent !important;
+  border-radius: 999px !important;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+html[data-oxa-look="panels"] ytmusic-search-box .search-box:hover {
+  background: #2a2a2a !important;
+  border-color: #3a3a3a !important;
+}
+html[data-oxa-look="panels"] ytmusic-search-box[opened] .search-box,
+html[data-oxa-look="panels"] ytmusic-search-box .search-box:focus-within {
+  border-color: #fff !important;
+}
+
+/* Sidebar panel. */
+html[data-oxa-look="panels"] #guide-wrapper,
+html[data-oxa-look="panels"] #mini-guide-background {
+  background: #000 !important;
+  border: 0 !important;
+}
+html[data-oxa-look="panels"] ytmusic-guide-renderer {
+  background: var(--oxa-panel) !important;
+  border: 0 !important;
+  border-radius: var(--oxa-radius) !important;
+  margin: 0 0 var(--oxa-gap) var(--oxa-gap) !important;
+  height: calc(100% - var(--oxa-gap)) !important;
+  box-sizing: border-box !important;
+}
+html[data-oxa-look="panels"] ytmusic-guide-entry-renderer tp-yt-paper-item {
+  color: var(--oxa-muted) !important;
+  border-radius: calc(var(--oxa-radius) * 0.5) !important;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+html[data-oxa-look="panels"] ytmusic-guide-entry-renderer:hover tp-yt-paper-item {
+  color: #fff !important;
+  background-color: #1a1a1a !important;
+}
+html[data-oxa-look="panels"] ytmusic-guide-entry-renderer[active] tp-yt-paper-item {
+  color: #fff !important;
+  background-color: #232323 !important;
+}
+
+/* Page panel. ytmusic-app in the selector outranks common.css, which makes
+   these containers transparent for the glass look. */
+html[data-oxa-look="panels"] ytmusic-app ytmusic-browse-response,
+html[data-oxa-look="panels"] ytmusic-app ytmusic-search-page {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--oxa-base) 55%, #5a5a5a) 0px, var(--oxa-panel) 340px) !important;
+  background-color: var(--oxa-panel) !important;
+  border-radius: var(--oxa-radius) !important;
+  margin-right: var(--oxa-gap) !important;
+  min-height: calc(100vh - var(--ytmusic-nav-bar-height, 64px) - 72px - var(--oxa-gap));
+  box-sizing: border-box;
+}
+
+/* Cards: a raised tile appears behind the card on hover. The spread shadow
+   paints around it without changing the carousel's layout. */
+html[data-oxa-look="panels"] ytmusic-two-row-item-renderer {
+  border-radius: calc(var(--oxa-radius) * 0.5);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+html[data-oxa-look="panels"] ytmusic-two-row-item-renderer:hover {
+  background-color: var(--oxa-raised) !important;
+  box-shadow: 0 0 0 8px var(--oxa-raised) !important;
+}
+html[data-oxa-look="panels"] ytmusic-responsive-list-item-renderer {
+  border-radius: calc(var(--oxa-radius) * 0.5);
+}
+html[data-oxa-look="panels"] ytmusic-responsive-list-item-renderer:hover {
+  background-color: #2a2a2a !important;
+}
+
+/* Player bar: white progress that turns the accent on hover, a white
+   round play button. */
+html[data-oxa-look="panels"] ytmusic-player-bar tp-yt-paper-slider,
+html[data-oxa-look="panels"] ytmusic-player-bar #progress-bar {
+  --paper-slider-active-color: #fff !important;
+  --paper-slider-knob-color: #fff !important;
+  --paper-slider-container-color: #4d4d4d !important;
+}
+html[data-oxa-look="panels"] ytmusic-player-bar tp-yt-paper-slider:hover,
+html[data-oxa-look="panels"] ytmusic-player-bar #progress-bar:hover {
+  --paper-slider-active-color: var(--oxa-accent) !important;
+}
+html[data-oxa-look="panels"] ytmusic-player-bar #play-pause-button {
+  background-color: #fff !important;
+  border-radius: 50% !important;
+  color: #000 !important;
+  --iron-icon-fill-color: #000 !important;
+  transition: transform 0.15s ease;
+}
+html[data-oxa-look="panels"] ytmusic-player-bar #play-pause-button:hover {
+  transform: scale(1.06);
+}
+
+/* Now playing: a panel of its own with the cover's color at the top. */
+html[data-oxa-look="panels"] ytmusic-player-page {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--oxa-base) 70%, #4a4a4a) 0%, var(--oxa-panel) 60%) !important;
+  background-color: var(--oxa-panel) !important;
+  border: 0 !important;
+  border-radius: var(--oxa-radius) !important;
+}
+html[data-oxa-look="panels"] ytmusic-player-queue-item {
+  border-radius: calc(var(--oxa-radius) * 0.5);
+}
+html[data-oxa-look="panels"] ytmusic-player-queue-item[selected] {
+  background-color: #2a2a2a !important;
+}
+
+html[data-oxa-look="panels"] .oxitune-lyrics-view {
+  --oxitune-lyric-on: #fff !important;
+  --oxitune-lyric-off: rgba(255, 255, 255, 0.4) !important;
+  --oxitune-lyric-weight: 800 !important;
+}

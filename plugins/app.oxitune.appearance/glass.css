@@ -1,0 +1,163 @@
+/* Glass: translucent chrome over a blurred wash of the cover art. The wash
+   is a small bitmap blurred once per song in main.js (--oxa-wash) and
+   stretched here; no live CSS blur on full-window layers. */
+
+html[data-oxa-look="glass"] {
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 0%, color-mix(in srgb, var(--oxa-base) 90%, white 6%) 0%, transparent 70%),
+    linear-gradient(180deg, var(--oxa-base) 0%, #07090b 100%) !important;
+  background-attachment: fixed !important;
+  --ytmusic-brand-background-solid: color-mix(in srgb, var(--oxa-base) 55%, transparent) !important;
+  --yt-sys-color-baseline--raised-background: color-mix(in srgb, var(--oxa-base) 80%, #000 20%) !important;
+  --yt-sys-color-baseline--menu-background: color-mix(in srgb, var(--oxa-base) 70%, #000 30%) !important;
+  --paper-menu-background-color: color-mix(in srgb, var(--oxa-base) 70%, #000 30%) !important;
+  --paper-dialog-background-color: color-mix(in srgb, var(--oxa-base) 70%, #000 30%) !important;
+  --ytmusic-badge-chip-background: rgba(255, 255, 255, 0.08) !important;
+  --ytmusic-explore-chip-background: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* The wash and a veil over it, behind everything (negative z-index in the
+   root stacking context, above <html>'s own background). */
+html[data-oxa-look="glass"] body::before,
+html[data-oxa-look="glass"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+html[data-oxa-look="glass"] body::before {
+  background: var(--oxa-wash) center / cover no-repeat;
+  opacity: var(--oxa-wash-opacity);
+  transition: opacity 0.8s ease;
+}
+html[data-oxa-look="glass"] body::after {
+  background: linear-gradient(180deg, rgba(6, 8, 10, 0.25) 0%, rgba(6, 8, 10, 0.7) 100%);
+}
+
+/* Top bar: no slab, just the search pill. YouTube Music fades
+   #nav-bar-background in once the page scrolls; that layer becomes glass so
+   content passing under the bar stays readable. */
+html[data-oxa-look="glass"] ytmusic-nav-bar {
+  background: transparent !important;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+}
+html[data-oxa-look="glass"] ytmusic-app-layout #nav-bar-background {
+  background: color-mix(in srgb, var(--oxa-base) 60%, transparent) !important;
+  backdrop-filter: blur(20px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+  border-bottom: 0 !important;
+}
+html[data-oxa-look="glass"] ytmusic-search-box .search-box {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border-radius: 999px !important;
+}
+html[data-oxa-look="glass"] ytmusic-search-box[opened] .search-box,
+html[data-oxa-look="glass"] ytmusic-search-box .search-box:focus-within {
+  background: color-mix(in srgb, var(--oxa-base) 70%, #000 30%) !important;
+  border-color: color-mix(in srgb, var(--oxa-accent) 60%, transparent) !important;
+}
+
+/* Sidebar: no panel, rounded highlight on the current entry. */
+html[data-oxa-look="glass"] ytmusic-guide-renderer,
+html[data-oxa-look="glass"] #guide-wrapper,
+html[data-oxa-look="glass"] #mini-guide-background {
+  background: transparent !important;
+  border-right: 0 !important;
+}
+html[data-oxa-look="glass"] ytmusic-guide-entry-renderer tp-yt-paper-item {
+  border-radius: calc(var(--oxa-radius) * 0.75) !important;
+  transition: background-color 0.15s ease;
+}
+html[data-oxa-look="glass"] ytmusic-guide-entry-renderer:hover tp-yt-paper-item {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+html[data-oxa-look="glass"] ytmusic-guide-entry-renderer[active] tp-yt-paper-item {
+  background-color: rgba(255, 255, 255, 0.11) !important;
+}
+
+/* Cards lift on hover. */
+html[data-oxa-look="glass"] ytmusic-two-row-item-renderer .image-wrapper {
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+html[data-oxa-look="glass"] ytmusic-two-row-item-renderer:hover .image-wrapper {
+  transform: translateY(-3px);
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.45));
+}
+html[data-oxa-look="glass"] ytmusic-responsive-list-item-renderer {
+  border-radius: calc(var(--oxa-radius) * 0.75);
+}
+html[data-oxa-look="glass"] ytmusic-responsive-list-item-renderer:hover {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Player bar: glass tinted with the cover's color. */
+html[data-oxa-look="glass"] ytmusic-player-bar {
+  background: color-mix(in srgb, var(--oxa-base) 72%, transparent) !important;
+  backdrop-filter: blur(24px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+html[data-oxa-look="glass"] ytmusic-app-layout #player-bar-background {
+  background: transparent !important;
+}
+html[data-oxa-look="glass"] ytmusic-player-bar #play-pause-button {
+  background-color: var(--oxa-accent) !important;
+  border-radius: 50% !important;
+  color: #06090b !important;
+  --iron-icon-fill-color: #06090b !important;
+  transition: transform 0.15s ease;
+}
+html[data-oxa-look="glass"] ytmusic-player-bar #play-pause-button:hover {
+  transform: scale(1.06);
+}
+
+/* Floating: a pill above the bottom edge, at most 1180px wide. */
+html[data-oxa-floating="true"] ytmusic-player-bar {
+  --oxa-bar-radius: calc(var(--oxa-radius) + 8px);
+  bottom: 12px !important;
+  left: max(12px, calc(50vw - 590px)) !important;
+  width: min(1180px, calc(100vw - 24px)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: var(--oxa-bar-radius) !important;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45) !important;
+}
+/* The progress bar runs along the pill's top edge, inside its corners. */
+html[data-oxa-floating="true"] ytmusic-player-bar #progress-bar {
+  width: calc(100% - 2 * var(--oxa-bar-radius)) !important;
+  margin-left: var(--oxa-bar-radius) !important;
+}
+/* Room under the last row of a page for the raised bar. */
+html[data-oxa-floating="true"] ytmusic-app-layout[player-visible_] #content {
+  padding-bottom: 12px;
+}
+
+/* Now playing: the wash full size, rounded cover with a soft shadow. */
+html[data-oxa-look="glass"] ytmusic-player-page {
+  background:
+    linear-gradient(180deg, rgba(6, 8, 10, 0.3) 0%, rgba(6, 8, 10, 0.72) 100%),
+    var(--oxa-wash) center / cover no-repeat,
+    var(--oxa-base) !important;
+  border: 0 !important;
+}
+html[data-oxa-look="glass"] ytmusic-player-page #song-image img {
+  filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.5));
+}
+html[data-oxa-look="glass"] ytmusic-player-page tp-yt-paper-tab {
+  border-radius: calc(var(--oxa-radius) * 0.75);
+}
+html[data-oxa-look="glass"] ytmusic-player-queue-item {
+  border-radius: calc(var(--oxa-radius) * 0.75);
+}
+html[data-oxa-look="glass"] ytmusic-player-queue-item[selected] {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Oxitune's lyrics: bold, the current line lit with a hint of the accent. */
+html[data-oxa-look="glass"] .oxitune-lyrics-view {
+  --oxitune-lyric-on: color-mix(in srgb, var(--oxa-accent) 22%, white) !important;
+  --oxitune-lyric-off: rgba(255, 255, 255, 0.3) !important;
+  --oxitune-lyric-weight: 800 !important;
+}
