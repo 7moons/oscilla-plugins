@@ -11,7 +11,9 @@ const {
   varsCss,
   rootAttributes,
   boxBlur,
-  gradeWash
+  gradeWash,
+  headColor,
+  pageArtUrl
 } = require('./main.js');
 
 /** RGBA pixels: `n` copies of each [r, g, b] (alpha 255). */
@@ -127,6 +129,45 @@ describe('Appearance: custom properties', () => {
   });
 });
 
+describe('Appearance: page header color (panels)', () => {
+  const panels = normalizeSettings({ look: 'panels' });
+  const song = { accent: '#2299ee', base: '#101820' };
+
+  test('the open page’s artwork wins over the playing song', () => {
+    expect(headColor(panels, song, { palette: { accent: '#ee4411', base: '#200a05' } })).toBe('#ee4411');
+  });
+
+  test('black-and-white artwork gives neutral grey, not the song’s color', () => {
+    expect(headColor(panels, song, { palette: { accent: null, base: '#111111' } })).toBe('#5a5a5a');
+  });
+
+  test('no artwork, or artwork that couldn’t be read: the playing song', () => {
+    expect(headColor(panels, song, null)).toBe('#2299ee');
+    expect(headColor(panels, song, { palette: null })).toBe('#2299ee');
+    expect(headColor(panels, null, null)).toBe('#5a5a5a');
+  });
+
+  test('tinting off: fixed grey whatever the page shows', () => {
+    expect(headColor({ ...panels, tint: false }, song, { palette: { accent: '#ee4411', base: '#000' } })).toBe('#5a5a5a');
+  });
+
+  test('reaches the stylesheet', () => {
+    expect(varsCss(panels, song, null, { palette: { accent: '#ee4411', base: '#000' } })).toContain('--oxa-head: #ee4411;');
+  });
+
+  test('finds the artist photo first, then an album or playlist cover, https only', () => {
+    const doc = (found: Record<string, { src: string; currentSrc?: string } | null>) => ({
+      querySelector: (sel: string) => found[sel] ?? null
+    });
+    const artist = 'ytmusic-browse-response#browse-page ytmusic-immersive-header-renderer ytmusic-fullbleed-thumbnail-renderer img';
+    const album = 'ytmusic-browse-response#browse-page ytmusic-responsive-header-renderer ytmusic-thumbnail-renderer img';
+    expect(pageArtUrl(doc({ [artist]: { src: 'https://lh3.example/a', currentSrc: 'https://lh3.example/a2' } }))).toBe('https://lh3.example/a2');
+    expect(pageArtUrl(doc({ [album]: { src: 'https://yt3.example/b' } }))).toBe('https://yt3.example/b');
+    expect(pageArtUrl(doc({ [album]: { src: 'data:image/gif;base64,R0lG' } }))).toBeNull();
+    expect(pageArtUrl(doc({}))).toBeNull();
+  });
+});
+
 describe('Appearance: stylesheets', () => {
   const manifest = JSON.parse(readFileSync(join(import.meta.dir, 'manifest.json'), 'utf8'));
 
@@ -136,7 +177,9 @@ describe('Appearance: stylesheets', () => {
       // Font faces change nothing until a rule names them; only the
       // plugin's own family names may be declared.
       for (const family of raw.match(/font-family:\s*'[^']+'(?=;\s*font-style)/g) ?? []) expect(family).toMatch(/'Oxa /);
-      const css = raw.replace(/@font-face\s*\{[^}]*\}/g, '');
+      // Registered custom properties must be the plugin's own.
+      for (const name of raw.match(/@property\s+[\w-]+/g) ?? []) expect(name).toMatch(/@property\s+--oxa-/);
+      const css = raw.replace(/@font-face\s*\{[^}]*\}/g, '').replace(/@property\s+[\w-]+\s*\{[^}]*\}/g, '');
       const selectors = css.match(/[^{}]+(?=\{)/g) ?? [];
       for (const group of selectors) {
         for (const selector of group.split(',')) {

@@ -1,8 +1,16 @@
 /* Panels: the sidebar, the page and the now-playing view as rounded dark
    panels separated by black gaps; a flat black top bar and player bar;
    bold type; cards that light up on hover with a green play button rising
-   into the corner. The page panel's header takes the cover's color
-   (--oxa-tint, neutral grey when the cover has none). */
+   into the corner. The page panel's header takes the open album's,
+   playlist's or artist's color (--oxa-head, from main.js), the playing
+   song's elsewhere; the now-playing panel the song's (--oxa-tint). */
+
+/* Registered so the header color can fade from page to page. */
+@property --oxa-head {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #5a5a5a;
+}
 
 html[data-oxa-look="panels"] {
   --oxa-font: 'Oxa Figtree', 'Figtree', system-ui, sans-serif;
@@ -21,6 +29,7 @@ html[data-oxa-look="panels"] {
   --ytmusic-badge-chip-background: rgba(255, 255, 255, 0.07) !important;
   --ytmusic-explore-chip-background: rgba(255, 255, 255, 0.07) !important;
   --ytmusic-text-secondary: var(--oxa-muted) !important;
+  transition: --oxa-head 0.6s ease;
 }
 
 /* Top bar and player bar: flat black, no borders. */
@@ -100,7 +109,7 @@ html[data-oxa-look="panels"] ytmusic-app-layout::before {
   bottom: calc(var(--ytmusic-player-bar-height, 0px) + var(--oxa-gap));
   border-radius: var(--oxa-radius);
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--oxa-tint) 38%, var(--oxa-panel)) 0px, var(--oxa-panel) 380px),
+    linear-gradient(180deg, color-mix(in srgb, var(--oxa-head) 38%, var(--oxa-panel)) 0px, var(--oxa-panel) 380px),
     var(--oxa-panel);
 }
 

@@ -123,8 +123,35 @@ function isWashUrl(url) {
   return typeof url === 'string' && /^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(url);
 }
 
+/** Header color for the open page in the panels look. `page` is what the
+ * page leads with: null for no artwork (home, search), else { palette },
+ * where a null palette means the artwork couldn't be read. Artwork with a
+ * color gives that color, black-and-white artwork neutral grey; without
+ * readable artwork the header follows the playing song. */
+function headColor(settings, songPalette, page) {
+  var look = settings.look;
+  if (!settings.tint) return FIXED_TINT[look];
+  if (page && page.palette) return page.palette.accent || FIXED_TINT[look];
+  return (songPalette && songPalette.accent) || FIXED_TINT[look];
+}
+
+/** The artwork the open page leads with: an artist's photo, or an album's
+ * or playlist's cover. null on pages without one. */
+var HEADER_ART = [
+  'ytmusic-browse-response#browse-page ytmusic-immersive-header-renderer ytmusic-fullbleed-thumbnail-renderer img',
+  'ytmusic-browse-response#browse-page ytmusic-responsive-header-renderer ytmusic-thumbnail-renderer img'
+];
+function pageArtUrl(doc) {
+  for (var i = 0; i < HEADER_ART.length; i++) {
+    var img = doc.querySelector(HEADER_ART[i]);
+    var src = img && (img.currentSrc || img.src);
+    if (src && src.indexOf('https://') === 0) return src;
+  }
+  return null;
+}
+
 /** The per-track custom properties, scoped to the active look. */
-function varsCss(settings, palette, washUrl) {
+function varsCss(settings, palette, washUrl, page) {
   var look = settings.look;
   var accent = (settings.tint && palette && palette.accent) || FIXED_ACCENT[look];
   var base = (settings.tint && palette && palette.base) || FIXED_BASE[look];
@@ -135,6 +162,7 @@ function varsCss(settings, palette, washUrl) {
     ' --oxa-accent: ' + accent + ';' +
     ' --oxa-base: ' + base + ';' +
     ' --oxa-tint: ' + tint + ';' +
+    ' --oxa-head: ' + headColor(settings, palette, page) + ';' +
     ' --oxa-radius: ' + settings.radius + 'px;' +
     ' --oxa-wash: ' + wash + ';' +
     ' --oxa-wash-opacity: ' + settings.backdrop / 100 + ';' +
@@ -187,7 +215,7 @@ function gradeWash(data, saturate, brightness) {
 /** Loads the cover once into a small canvas: its palette and a pre-blurred
  * wash (a data URL) the stylesheet stretches over the window. A live CSS
  * blur on a full-window layer would be recomposited on every repaint. */
-function renderCover(doc, url) {
+function renderCover(doc, url, withWash) {
   return new Promise(function (resolve) {
     if (!url) return resolve(null);
     var img = new Image();
@@ -201,6 +229,7 @@ function renderCover(doc, url) {
         ctx.drawImage(img, 0, 0, WASH_SIZE, WASH_SIZE);
         var pixels = ctx.getImageData(0, 0, WASH_SIZE, WASH_SIZE);
         var palette = pickPalette(pixels.data);
+        if (withWash === false) return resolve({ palette: palette, wash: null });
         for (var i = 0; i < 3; i++) boxBlur(pixels.data, WASH_SIZE, WASH_SIZE, 3);
         gradeWash(pixels.data, 1.8, 0.62);
         ctx.putImageData(pixels, 0, 0);
@@ -224,6 +253,9 @@ function start(oxitune) {
   var cover = null;
   var coverUrl;
   var removeVars = null;
+  var page = null;
+  var pageUrl = null;
+  var pageTimer = null;
 
   function applyAttributes() {
     var attrs = rootAttributes(settings);
@@ -235,7 +267,7 @@ function start(oxitune) {
 
   function applyVars() {
     var remove = removeVars;
-    removeVars = oxitune.ui.addStyle(varsCss(settings, cover && cover.palette, cover && cover.wash));
+    removeVars = oxitune.ui.addStyle(varsCss(settings, cover && cover.palette, cover && cover.wash, page));
     if (remove) remove();
   }
 
@@ -251,16 +283,49 @@ function start(oxitune) {
     });
   }
 
+  // YouTube Music swaps pages without an event a plugin can rely on, so the
+  // panels look checks the open page's header artwork twice a second (one
+  // querySelector per selector; the artwork is only loaded when it changes).
+  function checkPage() {
+    var url = pageArtUrl(doc);
+    if (url === pageUrl) return;
+    pageUrl = url;
+    if (!url) {
+      page = null;
+      applyVars();
+      return;
+    }
+    renderCover(doc, url, false).then(function (result) {
+      if (url !== pageUrl) return;
+      page = { palette: result && result.palette };
+      applyVars();
+    });
+  }
+
+  function watchPage() {
+    var on = settings.look === 'panels' && settings.tint;
+    if (on && !pageTimer) pageTimer = setInterval(checkPage, 500);
+    if (!on && pageTimer) {
+      clearInterval(pageTimer);
+      pageTimer = null;
+      page = null;
+      pageUrl = null;
+    }
+  }
+
   applyAttributes();
   applyVars();
+  watchPage();
   onTrack(oxitune.player.getTrack());
   oxitune.player.onTrackChange(onTrack);
   oxitune.settings.onChange(function (values) {
     settings = normalizeSettings(values);
     applyAttributes();
+    watchPage();
     applyVars();
   });
   oxitune.onUnload(function () {
+    if (pageTimer) clearInterval(pageTimer);
     if (removeVars) removeVars();
     root.removeAttribute('data-oxa-look');
     root.removeAttribute('data-oxa-floating');
@@ -279,6 +344,8 @@ if (typeof module !== 'undefined') {
     hslToHex: hslToHex,
     isWashUrl: isWashUrl,
     varsCss: varsCss,
+    headColor: headColor,
+    pageArtUrl: pageArtUrl,
     rootAttributes: rootAttributes,
     boxBlur: boxBlur,
     gradeWash: gradeWash
