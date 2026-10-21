@@ -10,7 +10,8 @@ const {
   isWashUrl,
   varsCss,
   rootAttributes,
-  boxBlur
+  boxBlur,
+  gradeWash
 } = require('./main.js');
 
 /** RGBA pixels: `n` copies of each [r, g, b] (alpha 255). */
@@ -72,6 +73,16 @@ describe('Appearance: colors', () => {
     expect(pickPalette(new Uint8ClampedArray([]))).toBeNull();
   });
 
+  test('the wash grade saturates and darkens, and leaves grey grey', () => {
+    const px = pixels([[200, 100, 50], [1]], [[128, 128, 128], [1]]);
+    gradeWash(px, 2, 0.5);
+    const [r, g, b] = [px[0], px[1], px[2]];
+    expect(r - b).toBeGreaterThan((200 - 50) * 0.5);
+    expect(Math.max(r, g, b)).toBeLessThanOrEqual(200);
+    expect([px[4], px[5], px[6]]).toEqual([64, 64, 64]);
+    expect(px[3]).toBe(255);
+  });
+
   test('blur keeps a flat image flat and smooths an edge', () => {
     const flat = pixels([[100, 50, 25], [16]]);
     boxBlur(flat, 4, 4, 1);
@@ -119,9 +130,12 @@ describe('Appearance: stylesheets', () => {
 
   test('every rule waits for the attributes main.js sets', () => {
     for (const file of manifest.styles) {
-      const css = readFileSync(join(import.meta.dir, file), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+      const raw = readFileSync(join(import.meta.dir, file), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+      // Font faces change nothing until a rule names them; only the
+      // plugin's own family names may be declared.
+      for (const family of raw.match(/font-family:\s*'[^']+'(?=;\s*font-style)/g) ?? []) expect(family).toMatch(/'Oxa /);
+      const css = raw.replace(/@font-face\s*\{[^}]*\}/g, '');
       const selectors = css.match(/[^{}]+(?=\{)/g) ?? [];
-      expect(selectors.length).toBeGreaterThan(0);
       for (const group of selectors) {
         for (const selector of group.split(',')) {
           expect(selector.trim()).toMatch(/^html\[data-oxa-(look|floating)/);

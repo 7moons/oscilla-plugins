@@ -11,7 +11,7 @@ html[data-oxa-look] #oxitune-ambient-backdrop {
 }
 
 /* The page shows through YouTube Music's containers to the backdrop
-   (body::before in glass.css, flat black in panels.css). body stays
+   (body::before in glass.css, the panel layer in panels.css). body stays
    transparent so its own background doesn't paint over that layer. */
 html[data-oxa-look] body,
 html[data-oxa-look] ytmusic-app-layout,
@@ -34,38 +34,131 @@ html[data-oxa-look] {
   --paper-tabs-selection-bar-color: var(--oxa-accent) !important;
 }
 
-/* Progress and volume follow the accent. */
-html[data-oxa-look] ytmusic-player-bar tp-yt-paper-slider,
+/* The look's typeface everywhere YouTube Music sets Roboto or YouTube Sans. */
+html[data-oxa-look] body,
+html[data-oxa-look] ytmusic-app,
+html[data-oxa-look] ytmusic-app *:not(yt-icon):not(tp-yt-iron-icon):not(.material-icons) {
+  font-family: var(--oxa-font) !important;
+}
+
+/* Section headers: a compact title instead of YouTube Music's 45px poster
+   type, and a small label above it. */
+html[data-oxa-look] ytmusic-carousel-shelf-basic-header-renderer .title,
+html[data-oxa-look] ytmusic-shelf-renderer .title.ytmusic-shelf-renderer,
+html[data-oxa-look] ytmusic-grid-renderer .title.ytmusic-grid-renderer {
+  font-size: 24px !important;
+  line-height: 1.25 !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+}
+html[data-oxa-look] ytmusic-carousel-shelf-basic-header-renderer .strapline {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  margin-bottom: 4px !important;
+}
+
+/* Card text. */
+html[data-oxa-look] ytmusic-two-row-item-renderer .title {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 1.35 !important;
+}
+html[data-oxa-look] ytmusic-two-row-item-renderer .subtitle {
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+}
+
+/* Player bar: cover and title on the left, the transport in the middle with
+   the progress bar under it, the rest on the right. The three areas are
+   YouTube Music's own (start = transport, middle = song, end = volume). */
+html[data-oxa-look] ytmusic-player-bar {
+  grid-template-columns: minmax(0, 1.3fr) auto minmax(0, 1fr) !important;
+  grid-template-areas: "middle start end" !important;
+}
+html[data-oxa-look] ytmusic-player-bar .middle-controls {
+  justify-content: flex-start !important;
+  padding-left: 12px !important;
+  min-width: 0 !important;
+}
+html[data-oxa-look] ytmusic-player-bar #left-controls {
+  justify-content: center !important;
+  padding-bottom: 14px !important;
+}
+html[data-oxa-look] ytmusic-player-bar #right-controls {
+  justify-content: flex-end !important;
+}
+html[data-oxa-look] ytmusic-player-bar .title {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+html[data-oxa-look] ytmusic-player-bar .byline {
+  font-size: 13px !important;
+}
+html[data-oxa-look] ytmusic-player-bar .time-info {
+  font-size: 11px !important;
+  font-variant-numeric: tabular-nums;
+}
 html[data-oxa-look] ytmusic-player-bar #progress-bar {
+  top: auto !important;
+  bottom: 0 !important;
+  transform: none !important;
+  left: 50% !important;
+  width: var(--oxa-progress-width, 40%) !important;
+  margin-left: calc(var(--oxa-progress-width, 40%) / -2) !important;
+  --paper-slider-height: 4px !important;
+  --paper-slider-container-color: rgba(255, 255, 255, 0.18) !important;
+}
+html[data-oxa-look] ytmusic-player-bar tp-yt-paper-slider {
   --paper-slider-active-color: var(--oxa-accent) !important;
   --paper-slider-knob-color: var(--oxa-accent) !important;
-  --paper-slider-container-color: rgba(255, 255, 255, 0.18) !important;
 }
 html[data-oxa-look] tp-yt-paper-slider #primaryProgress.tp-yt-paper-slider {
   background-color: var(--oxa-accent) !important;
 }
+html[data-oxa-look] ytmusic-player-bar .thumbnail-image-wrapper img,
+html[data-oxa-look] ytmusic-player-bar img.image {
+  border-radius: calc(var(--oxa-radius) * 0.6) !important;
+}
 
-/* Rounded artwork. The radius goes on the image, so a circular artist
-   thumbnail (clipped round by its wrapper) stays a circle. */
-html[data-oxa-look] ytmusic-two-row-item-renderer yt-img-shadow img,
-html[data-oxa-look] ytmusic-two-row-item-renderer ytmusic-thumbnail-renderer img,
-html[data-oxa-look] ytmusic-two-row-item-renderer ytmusic-item-thumbnail-overlay-renderer {
-  border-radius: var(--oxa-radius) !important;
+/* List rows and queue rows. */
+html[data-oxa-look] ytmusic-responsive-list-item-renderer,
+html[data-oxa-look] ytmusic-player-queue-item {
+  border-radius: calc(var(--oxa-radius) * 0.6);
 }
 html[data-oxa-look] ytmusic-responsive-list-item-renderer yt-img-shadow img,
 html[data-oxa-look] ytmusic-responsive-list-item-renderer ytmusic-thumbnail-renderer img,
-html[data-oxa-look] ytmusic-player-bar .thumbnail-image-wrapper img,
-html[data-oxa-look] ytmusic-player-bar img.image {
-  border-radius: calc(var(--oxa-radius) / 2) !important;
+html[data-oxa-look] ytmusic-player-queue-item yt-img-shadow img {
+  border-radius: calc(var(--oxa-radius) * 0.4) !important;
+}
+
+/* Now playing: tabs as pills in sentence case, the cover rounded. */
+html[data-oxa-look] ytmusic-player-page tp-yt-paper-tab {
+  text-transform: none !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  border-radius: 999px !important;
+  margin: 0 2px !important;
+}
+html[data-oxa-look] ytmusic-player-page tp-yt-paper-tab.iron-selected {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+}
+html[data-oxa-look] ytmusic-player-page tp-yt-paper-tabs #selectionBar {
+  display: none !important;
 }
 html[data-oxa-look] ytmusic-player-page #song-image img {
   border-radius: var(--oxa-radius) !important;
 }
 
-/* Chips as pills. */
+/* Chips as pills; the selected one inverted. */
 html[data-oxa-look] ytmusic-chip-cloud-chip-renderer a,
 html[data-oxa-look] ytmusic-chip-cloud-chip-renderer .gradient-box {
   border-radius: 999px !important;
+}
+html[data-oxa-look] ytmusic-chip-cloud-chip-renderer .text {
+  font-size: 13px !important;
+  font-weight: 600 !important;
 }
 
 /* Menus and dialogs pick up the corner radius. */
@@ -73,4 +166,18 @@ html[data-oxa-look] ytmusic-menu-popup-renderer,
 html[data-oxa-look] tp-yt-paper-dialog,
 html[data-oxa-look] tp-yt-paper-listbox {
   border-radius: var(--oxa-radius) !important;
+}
+
+/* Oxitune's lyrics in the look's typeface. */
+html[data-oxa-look] .oxitune-lyrics-view {
+  --oxitune-font-display: var(--oxa-font) !important;
+}
+
+/* Carousels scroll with their arrows; the native scrollbar would draw
+   across the bottom of the cards on hover. */
+html[data-oxa-look] ytmusic-carousel #items {
+  scrollbar-width: none !important;
+}
+html[data-oxa-look] ytmusic-carousel #items::-webkit-scrollbar {
+  display: none !important;
 }

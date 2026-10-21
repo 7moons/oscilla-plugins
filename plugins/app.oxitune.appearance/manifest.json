@@ -11,7 +11,7 @@
   "permissions": ["player:read", "page", "ui"],
   "hosts": [],
   "entry": "main.js",
-  "styles": ["common.css", "glass.css", "panels.css"],
+  "styles": ["font-inter.css", "font-figtree.css", "common.css", "glass.css", "panels.css"],
   "settings": [
     {
       "key": "look",

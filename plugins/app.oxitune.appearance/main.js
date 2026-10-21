@@ -170,6 +170,15 @@ function boxBlur(data, w, h, r) {
   pass(tmp, data, false);
 }
 
+/** Pushes saturation and pulls brightness, in place, so the wash reads as
+ * the cover's color behind white text instead of a grey smear. */
+function gradeWash(data, saturate, brightness) {
+  for (var i = 0; i < data.length; i += 4) {
+    var lum = 0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2];
+    for (var c = 0; c < 3; c++) data[i + c] = clamp((lum + (data[i + c] - lum) * saturate) * brightness, 0, 255);
+  }
+}
+
 /** Loads the cover once into a small canvas: its palette and a pre-blurred
  * wash (a data URL) the stylesheet stretches over the window. A live CSS
  * blur on a full-window layer would be recomposited on every repaint. */
@@ -188,6 +197,7 @@ function renderCover(doc, url) {
         var pixels = ctx.getImageData(0, 0, WASH_SIZE, WASH_SIZE);
         var palette = pickPalette(pixels.data);
         for (var i = 0; i < 3; i++) boxBlur(pixels.data, WASH_SIZE, WASH_SIZE, 3);
+        gradeWash(pixels.data, 1.8, 0.62);
         ctx.putImageData(pixels, 0, 0);
         resolve({ palette: palette, wash: canvas.toDataURL('image/png') });
       } catch (e) {
@@ -265,6 +275,7 @@ if (typeof module !== 'undefined') {
     isWashUrl: isWashUrl,
     varsCss: varsCss,
     rootAttributes: rootAttributes,
-    boxBlur: boxBlur
+    boxBlur: boxBlur,
+    gradeWash: gradeWash
   };
 }
