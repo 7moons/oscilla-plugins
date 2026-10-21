@@ -225,6 +225,14 @@ html[data-oxa-look] ytmusic-player-bar .oxa-time {
   white-space: nowrap;
   min-width: 4ch;
 }
+/* The slider's own container has a 17px left margin on top of a 100%
+   width, so it overflowed 17px to the right: the gap before the total time
+   was ~0 against ~31px after the elapsed time. Without it both labels sit
+   14px (their padding) from the track. */
+html[data-oxa-look] ytmusic-player-bar #progress-bar #sliderContainer {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
 html[data-oxa-look] ytmusic-player-bar .oxa-time-elapsed {
   grid-area: elapsed;
   text-align: right;
