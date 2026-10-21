@@ -130,6 +130,11 @@ describe('Appearance: stylesheets', () => {
     }
   });
 
+  test('number defaults are written as floats, which Oxitune 0.4.0 needs to accept them', () => {
+    const raw = readFileSync(join(import.meta.dir, 'manifest.json'), 'utf8');
+    expect(raw).not.toMatch(/"default":\s*-?\d+\s*[,}\n]/);
+  });
+
   test('settings defaults match what the script assumes', () => {
     const defaults = Object.fromEntries(manifest.settings.map((s: { key: string; default: unknown }) => [s.key, s.default]));
     expect(normalizeSettings({})).toEqual(normalizeSettings(defaults));

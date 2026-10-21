@@ -40,11 +40,13 @@ html[data-oxa-look="glass"] body::after {
    content passing under the bar stays readable. */
 html[data-oxa-look="glass"] ytmusic-nav-bar {
   background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   border-bottom: 0 !important;
   box-shadow: none !important;
 }
 html[data-oxa-look="glass"] ytmusic-app-layout #nav-bar-background {
-  background: color-mix(in srgb, var(--oxa-base) 60%, transparent) !important;
+  background: color-mix(in srgb, var(--oxa-base) 88%, transparent) !important;
   backdrop-filter: blur(20px) saturate(150%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
   border-bottom: 0 !important;
@@ -93,9 +95,11 @@ html[data-oxa-look="glass"] ytmusic-responsive-list-item-renderer:hover {
   background-color: rgba(255, 255, 255, 0.06) !important;
 }
 
-/* Player bar: glass tinted with the cover's color. */
+/* Player bar: glass tinted with the cover's color. Dense enough to read
+   over bright covers on its own: WebKitGTK's software renderer skips
+   backdrop-filter, so the blur is a bonus where it is drawn. */
 html[data-oxa-look="glass"] ytmusic-player-bar {
-  background: color-mix(in srgb, var(--oxa-base) 72%, transparent) !important;
+  background: color-mix(in srgb, var(--oxa-base) 90%, transparent) !important;
   backdrop-filter: blur(24px) saturate(150%) !important;
   -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
   border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
@@ -130,7 +134,7 @@ html[data-oxa-floating="true"] ytmusic-player-bar #progress-bar {
   margin-left: var(--oxa-bar-radius) !important;
 }
 /* Room under the last row of a page for the raised bar. */
-html[data-oxa-floating="true"] ytmusic-app-layout[player-visible_] #content {
+html[data-oxa-floating="true"] ytmusic-app-layout[player-visible_] > #content {
   padding-bottom: 12px;
 }
 

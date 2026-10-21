@@ -1,7 +1,7 @@
 /* Panels: the sidebar, the page and the now-playing view as rounded dark
    panels separated by black gaps, a flat black top bar and player bar, a
    white play button. The page panel's header takes a gradient from the
-   cover's color (--oxa-base). */
+   cover's color (--oxa-accent). */
 
 html[data-oxa-look="panels"] {
   --oxa-gap: 8px;
@@ -53,6 +53,7 @@ html[data-oxa-look="panels"] ytmusic-guide-renderer {
   border: 0 !important;
   border-radius: var(--oxa-radius) !important;
   margin: 0 0 var(--oxa-gap) var(--oxa-gap) !important;
+  width: calc(100% - var(--oxa-gap)) !important;
   height: calc(100% - var(--oxa-gap)) !important;
   box-sizing: border-box !important;
 }
@@ -70,17 +71,25 @@ html[data-oxa-look="panels"] ytmusic-guide-entry-renderer[active] tp-yt-paper-it
   background-color: #232323 !important;
 }
 
-/* Page panel. ytmusic-app in the selector outranks common.css, which makes
-   these containers transparent for the glass look. */
-html[data-oxa-look="panels"] ytmusic-app ytmusic-browse-response,
-html[data-oxa-look="panels"] ytmusic-app ytmusic-search-page {
+/* Page panel: a fixed layer behind the page, between the top bar, the
+   sidebar and the player bar; the page scrolls over it. YouTube Music's
+   page containers are no taller than their first rows, so a background on
+   them can't fill the window. The sizes are YouTube Music's own custom
+   properties on ytmusic-app-layout, which follow the sidebar collapsing
+   and the player bar appearing. */
+html[data-oxa-look="panels"] ytmusic-app-layout::before {
+  content: "";
+  position: fixed;
+  z-index: -1;
+  pointer-events: none;
+  top: var(--ytmusic-nav-bar-height, 64px);
+  left: calc(var(--ytmusic-guide-width, 240px) + var(--oxa-gap));
+  right: var(--oxa-gap);
+  bottom: calc(var(--ytmusic-player-bar-height, 0px) + var(--oxa-gap));
+  border-radius: var(--oxa-radius);
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--oxa-base) 55%, #5a5a5a) 0px, var(--oxa-panel) 340px) !important;
-  background-color: var(--oxa-panel) !important;
-  border-radius: var(--oxa-radius) !important;
-  margin-right: var(--oxa-gap) !important;
-  min-height: calc(100vh - var(--ytmusic-nav-bar-height, 64px) - 72px - var(--oxa-gap));
-  box-sizing: border-box;
+    linear-gradient(180deg, color-mix(in srgb, var(--oxa-accent) 32%, var(--oxa-panel)) 0px, var(--oxa-panel) 340px),
+    var(--oxa-panel);
 }
 
 /* Cards: a raised tile appears behind the card on hover. The spread shadow
@@ -123,13 +132,14 @@ html[data-oxa-look="panels"] ytmusic-player-bar #play-pause-button:hover {
   transform: scale(1.06);
 }
 
-/* Now playing: a panel of its own with the cover's color at the top. */
+/* Now playing: a panel of its own with the cover's color at the top. The
+   clip makes the gaps and corners without moving YouTube Music's layout. */
 html[data-oxa-look="panels"] ytmusic-player-page {
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--oxa-base) 70%, #4a4a4a) 0%, var(--oxa-panel) 60%) !important;
+    linear-gradient(180deg, color-mix(in srgb, var(--oxa-accent) 32%, var(--oxa-panel)) 0%, var(--oxa-panel) 60%) !important;
   background-color: var(--oxa-panel) !important;
   border: 0 !important;
-  border-radius: var(--oxa-radius) !important;
+  clip-path: inset(0 var(--oxa-gap) var(--oxa-gap) var(--oxa-gap) round var(--oxa-radius));
 }
 html[data-oxa-look="panels"] ytmusic-player-queue-item {
   border-radius: calc(var(--oxa-radius) * 0.5);

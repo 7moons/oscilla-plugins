@@ -41,7 +41,7 @@
       "key": "radius",
       "type": "number",
       "label": { "en": "Corner roundness (px)", "pl": "Zaokrąglenie rogów (px)" },
-      "default": 12,
+      "default": 12.0,
       "min": 0,
       "max": 28
     },
@@ -50,7 +50,7 @@
       "type": "number",
       "label": { "en": "Cover backdrop strength (%)", "pl": "Siła tła z okładki (%)" },
       "description": { "en": "Glass look only.", "pl": "Tylko w wyglądzie Szkło." },
-      "default": 70,
+      "default": 70.0,
       "min": 0,
       "max": 100
     }
