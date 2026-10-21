@@ -27,7 +27,7 @@
       "key": "font",
       "type": "select",
       "label": { "en": "Font", "pl": "Czcionka" },
-      "default": "look",
+      "default": "geist",
       "options": [
         { "value": "look", "label": { "en": "The look's own (Inter / Figtree)", "pl": "Wyglądu (Inter / Figtree)" } },
         { "value": "inter", "label": "Inter" },

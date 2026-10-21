@@ -26,23 +26,25 @@ function pixels(...runs: [number[], number][]): Uint8ClampedArray {
 
 describe('Appearance: settings', () => {
   test('defaults for missing or broken values', () => {
-    expect(normalizeSettings(undefined)).toEqual({ look: 'glass', font: 'look', tint: true, floating: true, radius: 12, backdrop: 70 });
+    expect(normalizeSettings(undefined)).toEqual({ look: 'glass', font: 'geist', tint: true, floating: true, radius: 12, backdrop: 70 });
     expect(normalizeSettings({ look: 'nope', radius: 'x', backdrop: null })).toEqual({
-      look: 'glass', font: 'look', tint: true, floating: true, radius: 12, backdrop: 70
+      look: 'glass', font: 'geist', tint: true, floating: true, radius: 12, backdrop: 70
     });
   });
 
   test('numbers are clamped to the manifest range', () => {
     const s = normalizeSettings({ look: 'panels', tint: false, floating_bar: false, radius: 99, backdrop: -5 });
-    expect(s).toEqual({ look: 'panels', font: 'look', tint: false, floating: false, radius: 28, backdrop: 0 });
+    expect(s).toEqual({ look: 'panels', font: 'geist', tint: false, floating: false, radius: 28, backdrop: 0 });
     expect(normalizeSettings({ radius: 0 }).radius).toBe(0);
   });
 
-  test('a chosen font overrides the look’s; an unknown one falls back to it', () => {
+  test('a chosen font overrides the look’s; an unknown one falls back to Geist, the default', () => {
     expect(varsCss(normalizeSettings({ look: 'glass', font: 'manrope' }), null, null)).toContain("--oxa-font: 'Oxa Manrope', system-ui, sans-serif !important;");
     expect(varsCss(normalizeSettings({ look: 'glass', font: 'look' }), null, null)).not.toContain('--oxa-font');
-    expect(normalizeSettings({ font: 'comic-sans' }).font).toBe('look');
-    expect(normalizeSettings({ font: 'toString' }).font).toBe('look');
+    expect(normalizeSettings({ font: 'comic-sans' }).font).toBe('geist');
+    expect(normalizeSettings({ font: 'toString' }).font).toBe('geist');
+    expect(normalizeSettings({}).font).toBe('geist');
+    expect(varsCss(normalizeSettings({}), null, null)).toContain("--oxa-font: 'Oxa Geist'");
   });
 
   test('every font option in the manifest is known and embedded', () => {

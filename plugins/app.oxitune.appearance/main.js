@@ -39,7 +39,7 @@ function normalizeSettings(values) {
   var backdrop = Number(v.backdrop);
   return {
     look: LOOKS.indexOf(v.look) >= 0 ? v.look : 'glass',
-    font: FONTS.hasOwnProperty(v.font) ? v.font : 'look',
+    font: v.font === 'look' || FONTS.hasOwnProperty(v.font) ? v.font : 'geist',
     tint: v.tint !== false,
     floating: v.floating_bar !== false,
     radius: isFinite(radius) && v.radius !== null && v.radius !== '' ? Math.round(clamp(radius, 0, 28)) : 12,
